@@ -1,6 +1,6 @@
 from django.http import HttpResponse
 from django.template import loader
-from .models import ReadingMaterial, Course, Mcq
+from .models import ReadingMaterial, Course, Mcq, ProgrammingProblem, WeeklyModules, Student
 from django.db.models import Subquery, OuterRef
 
 
@@ -45,7 +45,7 @@ def mcq(request,c_id,q_id):
     if next>0 :
         nexturl ="/mcq/"+str(c_id)+"/"+str(next) 
     else :
-        nexturl = '../../allreadingmaterials/' 
+        nexturl = '../../prog/1' 
     template = loader.get_template('mcq.html')
     context = {
         'que_obj' : que_obj,
@@ -54,4 +54,31 @@ def mcq(request,c_id,q_id):
     return HttpResponse(template.render(context, request))
 
 
+def progprob(request,rmid):
+    #currently only shows one problem
+    prog_prob= ProgrammingProblem.objects.get(id=1)
+    context = {
+        'prob' : prog_prob,
+    }
+    template = loader.get_template('progprob.html')
+    return HttpResponse(template.render(context, request))
 
+def weekmod(request, c_id):
+    course = Course.objects.get(id=c_id)
+    weekmods = WeeklyModules.objects.filter(course=course)
+   
+    context = {
+        'weekmods' : weekmods,
+    }
+    template = loader.get_template('weeklymodules.html') 
+    return HttpResponse(template.render(context, request))
+
+
+def home(request):
+    student = Student.objects.get(id=1)
+    std = {'name' : student.name, 'class' : student._class }
+    context = {
+        'std' : std
+    }
+    template = loader.get_template('home.html') 
+    return HttpResponse(template.render(context, request))
