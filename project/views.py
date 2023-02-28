@@ -1,6 +1,6 @@
 from django.http import HttpResponse
 from django.template import loader
-from .models import ReadingMaterial
+from .models import ReadingMaterial, Course, Mcq
 from django.db.models import Subquery, OuterRef
 
 
@@ -31,3 +31,27 @@ def details(request, ID):
         'nextTopic': nextTopic
     }
     return HttpResponse(template.render(context, request))
+
+
+def mcq(request,c_id,q_id):
+    que_obj = Mcq.objects.get(pk=q_id)
+    _course = que_obj.course
+    
+    next=-1
+    for i in (q_id+1,len(Mcq.objects.all())+1):
+        if Mcq.objects.filter(pk=i,course=_course).exists():
+            next = i
+            break
+    if next>0 :
+        nexturl ="mcq/"+next 
+    else :
+        nexturl = '../../allreadingmaterials/' 
+    template = loader.get_template('mcq.html')
+    context = {
+        'que_obj' : que_obj,
+        'next'     : nexturl,
+    }
+    return HttpResponse(template.render(context, request))
+
+
+
