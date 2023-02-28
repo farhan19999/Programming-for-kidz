@@ -43,7 +43,7 @@ def mcq(request,c_id,q_id):
             next = i
             break
     if next>0 :
-        nexturl ="mcq/"+next 
+        nexturl ="/mcq/"+str(c_id)+"/"+str(next) 
     else :
         nexturl = '../../allreadingmaterials/' 
     template = loader.get_template('mcq.html')
